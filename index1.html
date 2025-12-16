@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCRA TIVAOUANE - Plateforme de Désignation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .link-btn {
+            text-align: center;
+            margin-top: 20px;
+            color: #2a5298;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .dashboard {
+            padding: 20px;
+        }
+
+        .welcome {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .match-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .match-info {
+            margin-bottom: 10px;
+        }
+
+        .match-info strong {
+            color: #2a5298;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-accepted {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-declined {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-small {
+            padding: 8px 20px;
+            font-size: 14px;
+            width: auto;
+        }
+
+        .btn-accept {
+            background: #28a745;
+        }
+
+        .btn-decline {
+            background: #dc3545;
+        }
+
+        .designation-form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚽ SCRA TIVAOUANE</h1>
+            <p>Plateforme de Désignation d'Arbitres</p>
+        </div>
+
+        <!-- Page de Connexion -->
+        <div id="loginPage" class="content">
+            <h2 style="margin-bottom: 30px; color: #2a5298;">Connexion</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn">Se connecter</button>
+            </form>
+            <div class="link-btn" onclick="showRegister()">Pas encore inscrit ? S'inscrire</div>
+        </div>
+
+        <!-- Page d'Inscription -->
+        <div id="registerPage" class="content hidden">
+            <h2 style="margin-bottom: 30px; color: #2a5298;">Inscription</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Prénom</label>
+                    <input type="text" id="regPrenom" required>
+                </div>
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" id="regNom" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>Numéro de téléphone</label>
+                    <input type="tel" id="regTel" required>
+                </div>
+                <div class="form-group">
+                    <label>Localité</label>
+                    <input type="text" id="regLocalite" required>
+                </div>
+                <div class="form-group">
+                    <label>Type d'utilisateur</label>
+                    <select id="regType" onchange="toggleGrade()" required>
+                        <option value="">Choisir...</option>
+                        <option value="arbitre">Arbitre</option>
+                        <option value="superviseur">Superviseur de match</option>
+                        <option value="designateur">Désignateur de match</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="gradeGroup">
+                    <label>Grade d'arbitre</label>
+                    <select id="regGrade">
+                        <option value="eleve">Élève</option>
+                        <option value="district">District</option>
+                        <option value="ligue">Ligue</option>
+                        <option value="federale">Fédérale</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">S'inscrire</button>
+            </form>
+            <div class="link-btn" onclick="showLogin()">Déjà inscrit ? Se connecter</div>
+        </div>
+
+        <!-- Dashboard Arbitre/Superviseur -->
+        <div id="arbitreDashboard" class="content hidden">
+            <div class="header" style="position: relative;">
+                <button class="logout-btn" onclick="logout()">Déconnexion</button>
+            </div>
+            <div class="dashboard">
+                <div class="welcome">
+                    <h2 id="welcomeMessage"></h2>
+                    <p id="userInfo"></p>
+                </div>
+                <h3 style="margin-bottom: 20px; color: #2a5298;">Mes Matchs</h3>
+                <div id="matchList"></div>
+            </div>
+        </div>
+
+        <!-- Dashboard Désignateur -->
+        <div id="designateurDashboard" class="content hidden">
+            <div class="header" style="position: relative;">
+                <button class="logout-btn" onclick="logout()">Déconnexion</button>
+            </div>
+            <div class="dashboard">
+                <div class="welcome">
+                    <h2 id="welcomeMessageDes"></h2>
+                    <p>Gérez les désignations d'arbitres</p>
+                </div>
+                
+                <div class="designation-form">
+                    <h3 style="margin-bottom: 20px; color: #2a5298;">Nouvelle Désignation</h3>
+                    <form id="designationForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Équipe Domicile</label>
+                                <input type="text" id="equipeA" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Équipe Visiteur</label>
+                                <input type="text" id="equipeB" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date et Heure</label>
+                                <input type="datetime-local" id="dateMatch" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Stade</label>
+                                <input type="text" id="stade" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Arbitre Central</label>
+                            <select id="arbitreCentral" required></select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Arbitre Assistant 1</label>
+                                <select id="assistant1" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Arbitre Assistant 2</label>
+                                <select id="assistant2" required></select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Quatrième Arbitre</label>
+                                <select id="quatrieme" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Superviseur</label>
+                                <select id="superviseur" required></select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn">Créer la Désignation</button>
+                    </form>
+                </div>
+
+                <h3 style="margin-bottom: 20px; color: #2a5298;">Toutes les Désignations</h3>
+                <div id="allMatchList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Données en mémoire
+        let users = {};
+        let matches = {};
+        let currentUser = null;
+        let matchCounter = 0;
+
+        // Afficher/Masquer pages
+        function showLogin() {
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+        }
+
+        function showRegister() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.remove('hidden');
+        }
+
+        function toggleGrade() {
+            const type = document.getElementById('regType').value;
+            const gradeGroup = document.getElementById('gradeGroup');
+            gradeGroup.classList.toggle('hidden', type !== 'arbitre');
+        }
+
+        // Inscription
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            console.log('Formulaire soumis');
+            
+            const type = document.getElementById('regType').value;
+            
+            if (!type) {
+                alert('Veuillez sélectionner un type d\'utilisateur');
+                return;
+            }
+            
+            const user = {
+                prenom: document.getElementById('regPrenom').value,
+                nom: document.getElementById('regNom').value,
+                email: document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value,
+                telephone: document.getElementById('regTel').value,
+                localite: document.getElementById('regLocalite').value,
+                type: type,
+                grade: type === 'arbitre' ? document.getElementById('regGrade').value : null
+            };
+
+            if (users[user.email]) {
+                alert('Cet email est déjà utilisé');
+                return;
+            }
+
+            users[user.email] = user;
+            console.log('Utilisateur créé:', user);
+            alert('Inscription réussie ! Vous pouvez maintenant vous connecter.');
+            
+            document.getElementById('registerForm').reset();
+            document.getElementById('gradeGroup').classList.add('hidden');
+            showLogin();
+        });
+
+        // Connexion
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const user = users[email];
+            
+            if (!user || user.password !== password) {
+                alert('Email ou mot de passe incorrect');
+                return;
+            }
+
+            currentUser = user;
+            
+            document.getElementById('loginPage').classList.add('hidden');
+            
+            if (user.type === 'designateur') {
+                showDesignateurDashboard();
+            } else {
+                showArbitreDashboard();
+            }
+        });
+
+        function showArbitreDashboard() {
+            document.getElementById('arbitreDashboard').classList.remove('hidden');
+            document.getElementById('welcomeMessage').textContent = `Bienvenue ${currentUser.prenom} ${currentUser.nom}`;
+            document.getElementById('userInfo').textContent = `${currentUser.type.charAt(0).toUpperCase() + currentUser.type.slice(1)}${currentUser.grade ? ' - Grade: ' + currentUser.grade : ''} - ${currentUser.localite}`;
+            loadUserMatches();
+        }
+
+        function showDesignateurDashboard() {
+            document.getElementById('designateurDashboard').classList.remove('hidden');
+            document.getElementById('welcomeMessageDes').textContent = `Bienvenue ${currentUser.prenom} ${currentUser.nom}`;
+            loadArbitresList();
+            loadAllMatches();
+        }
+
+        function loadArbitresList() {
+            const selects = ['arbitreCentral', 'assistant1', 'assistant2', 'quatrieme', 'superviseur'];
+            
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">Choisir...</option>';
+                
+                Object.values(users).forEach(user => {
+                    if ((selectId === 'superviseur' && user.type === 'superviseur') || 
+                        (selectId !== 'superviseur' && user.type === 'arbitre')) {
+                        const option = document.createElement('option');
+                        option.value = user.email;
+                        option.textContent = `${user.prenom} ${user.nom}${user.grade ? ' (' + user.grade + ')' : ''} - ${user.localite}`;
+                        select.appendChild(option);
+                    }
+                });
+            });
+        }
+
+        document.getElementById('designationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const match = {
+                id: ++matchCounter,
+                equipeA: document.getElementById('equipeA').value,
+                equipeB: document.getElementById('equipeB').value,
+                date: document.getElementById('dateMatch').value,
+                stade: document.getElementById('stade').value,
+                arbitreCentral: document.getElementById('arbitreCentral').value,
+                assistant1: document.getElementById('assistant1').value,
+                assistant2: document.getElementById('assistant2').value,
+                quatrieme: document.getElementById('quatrieme').value,
+                superviseur: document.getElementById('superviseur').value,
+                statuses: {}
+            };
+
+            [match.arbitreCentral, match.assistant1, match.assistant2, match.quatrieme, match.superviseur].forEach(email => {
+                match.statuses[email] = 'en_attente';
+            });
+
+            matches[match.id] = match;
+            
+            // Envoi des notifications WhatsApp
+            sendWhatsAppNotifications(match);
+            
+            alert('Désignation créée avec succès ! Les notifications WhatsApp ont été envoyées.');
+            
+            document.getElementById('designationForm').reset();
+            loadAllMatches();
+        });
+
+        function sendWhatsAppNotifications(match) {
+            const message = encodeURIComponent(
+                `🏆 SCRA TIVAOUANE - Nouvelle Désignation\n\n` +
+                `Vous êtes désigné pour un match :\n` +
+                `⚽ ${match.equipeA} vs ${match.equipeB}\n` +
+                `📅 ${new Date(match.date).toLocaleString('fr-FR')}\n` +
+                `🏟️ Stade: ${match.stade}\n\n` +
+                `Veuillez vous connecter sur la plateforme pour confirmer votre disponibilité.`
+            );
+
+            // Envoyer aux arbitres et superviseur
+            [match.arbitreCentral, match.assistant1, match.assistant2, match.quatrieme, match.superviseur].forEach(email => {
+                const user = users[email];
+                if (user && user.telephone) {
+                    // Nettoyer le numéro de téléphone
+                    let phone = user.telephone.replace(/\s+/g, '');
+                    
+                    // Ajouter +221 si le numéro ne commence pas par +
+                    if (!phone.startsWith('+')) {
+                        if (phone.startsWith('221')) {
+                            phone = '+' + phone;
+                        } else if (phone.startsWith('0')) {
+                            phone = '+221' + phone.substring(1);
+                        } else {
+                            phone = '+221' + phone;
+                        }
+                    }
+                    
+                    // Ouvrir WhatsApp avec le message
+                    const whatsappUrl = `https://wa.me/${phone}?text=${message}`;
+                    window.open(whatsappUrl, '_blank');
+                }
+            });
+        }
+
+        function loadUserMatches() {
+            const container = document.getElementById('matchList');
+            container.innerHTML = '';
+
+            const userMatches = Object.values(matches).filter(m => 
+                m.arbitreCentral === currentUser.email ||
+                m.assistant1 === currentUser.email ||
+                m.assistant2 === currentUser.email ||
+                m.quatrieme === currentUser.email ||
+                m.superviseur === currentUser.email
+            );
+
+            if (userMatches.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">Aucun match assigné</p>';
+                return;
+            }
+
+            userMatches.forEach(match => {
+                const role = getRole(match, currentUser.email);
+                const status = match.statuses[currentUser.email];
+                
+                const card = document.createElement('div');
+                card.className = 'match-card';
+                card.innerHTML = `
+                    <div class="match-header">
+                        <h3>${match.equipeA} vs ${match.equipeB}</h3>
+                        <span class="status-badge status-${status === 'en_attente' ? 'pending' : status === 'accepte' ? 'accepted' : 'declined'}">
+                            ${status === 'en_attente' ? 'En attente' : status === 'accepte' ? 'Accepté' : 'Refusé'}
+                        </span>
+                    </div>
+                    <div class="match-info"><strong>Rôle:</strong> ${role}</div>
+                    <div class="match-info"><strong>Date:</strong> ${new Date(match.date).toLocaleString('fr-FR')}</div>
+                    <div class="match-info"><strong>Stade:</strong> ${match.stade}</div>
+                    ${status === 'en_attente' ? `
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-accept" onclick="respondMatch(${match.id}, 'accepte')">Disponible</button>
+                            <button class="btn btn-small btn-decline" onclick="respondMatch(${match.id}, 'refuse')">Indisponible</button>
+                        </div>
+                    ` : ''}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function loadAllMatches() {
+            const container = document.getElementById('allMatchList');
+            container.innerHTML = '';
+
+            if (Object.keys(matches).length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666;">Aucune désignation créée</p>';
+                return;
+            }
+
+            Object.values(matches).forEach(match => {
+                const card = document.createElement('div');
+                card.className = 'match-card';
+                card.innerHTML = `
+                    <div class="match-header">
+                        <h3>${match.equipeA} vs ${match.equipeB}</h3>
+                    </div>
+                    <div class="match-info"><strong>Date:</strong> ${new Date(match.date).toLocaleString('fr-FR')}</div>
+                    <div class="match-info"><strong>Stade:</strong> ${match.stade}</div>
+                    <div class="match-info"><strong>Arbitre Central:</strong> ${getUserName(match.arbitreCentral)} - ${getStatusText(match.statuses[match.arbitreCentral])}</div>
+                    <div class="match-info"><strong>Assistant 1:</strong> ${getUserName(match.assistant1)} - ${getStatusText(match.statuses[match.assistant1])}</div>
+                    <div class="match-info"><strong>Assistant 2:</strong> ${getUserName(match.assistant2)} - ${getStatusText(match.statuses[match.assistant2])}</div>
+                    <div class="match-info"><strong>Quatrième Arbitre:</strong> ${getUserName(match.quatrieme)} - ${getStatusText(match.statuses[match.quatrieme])}</div>
+                    <div class="match-info"><strong>Superviseur:</strong> ${getUserName(match.superviseur)} - ${getStatusText(match.statuses[match.superviseur])}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function getRole(match, email) {
+            if (match.arbitreCentral === email) return 'Arbitre Central';
+            if (match.assistant1 === email) return 'Arbitre Assistant 1';
+            if (match.assistant2 === email) return 'Arbitre Assistant 2';
+            if (match.quatrieme === email) return 'Quatrième Arbitre';
+            if (match.superviseur === email) return 'Superviseur';
+            return '';
+        }
+
+        function getUserName(email) {
+            const user = users[email];
+            return user ? `${user.prenom} ${user.nom}` : email;
+        }
+
+        function getStatusText(status) {
+            if (status === 'en_attente') return '⏳ En attente';
+            if (status === 'accepte') return '✅ Accepté';
+            if (status === 'refuse') return '❌ Refusé';
+            return status;
+        }
+
+        function respondMatch(matchId, response) {
+            matches[matchId].statuses[currentUser.email] = response;
+            alert(response === 'accepte' ? 'Match accepté !' : 'Match refusé. Le désignateur sera notifié.');
+            loadUserMatches();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('arbitreDashboard').classList.add('hidden');
+            document.getElementById('designateurDashboard').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('loginForm').reset();
+        }
+    </script>
+</body>
+</html>
